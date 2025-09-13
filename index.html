@@ -3,611 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TXT/M3U播放列表转换工具</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>多功能网站</title>
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --accent-color: #9b59b6;
-            --danger-color: #e74c3c;
-            --light-bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --text-light: #7f8c8d;
-            --border-radius: 10px;
-            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            box-sizing: border-box;
+        /* 全局样式 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #ffe6ea; /* 粉红色背景 */
             margin: 0;
             padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
-            color: var(--text-color);
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
+        /* 导航栏样式 */
+        nav {
+            background-color: #ff4d79;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            flex-direction: column;
         }
         
-        .app-container {
-            width: 100%;
-            max-width: 1000px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 20px;
+        nav li {
+            margin: 0 20px;
         }
         
-        header {
-            background: var(--primary-color);
+        nav a {
             color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #ff80ab;
+        }
+        
+        /* 内容区域样式 */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
-            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            flex: 1;
         }
         
         h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+            color: #ff4d79;
+            text-align: center;
+            margin-bottom: 30px;
         }
         
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .main-content {
-            padding: 25px;
-        }
-        
-        .input-section {
-            margin-bottom: 20px;
-        }
-        
-        .section-header {
+        /* 主页样式 */
+        .clock-calendar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .file-upload {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .file-input {
-            display: none;
-        }
-        
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            resize: vertical;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            transition: var(--transition);
-            background: var(--light-bg);
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        .convert-buttons {
-            display: flex;
-            gap: 12px;
-            margin: 15px 0 20px 0;
-        }
-        
-        .convert-btn {
-            flex: 1;
-            padding: 12px;
-            font-size: 0.95rem;
-        }
-        
-        .convert-btn i {
-            font-size: 1.1rem;
-        }
-        
-        .output-section {
-            margin-top: 25px;
-        }
-        
-        .output-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-            justify-content: flex-end;
-        }
-        
-        .btn-secondary {
-            background: var(--secondary-color);
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
-        }
-        
-        .btn-accent {
-            background: var(--accent-color);
-            color: white;
-        }
-        
-        .btn-accent:hover {
-            background: #8e44ad;
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
             flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 30px;
         }
         
-        .action-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 12px;
+        .clock-container, .calendar-container {
+            background: #fff5f7;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            margin: 10px;
+            min-width: 300px;
         }
         
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-color);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-            font-size: 0.9rem;
-            pointer-events: none;
+        #clock {
+            font-size: 48px;
+            text-align: center;
+            color: #ff4d79;
+            font-weight: bold;
         }
         
-        .toast.show {
-            opacity: 1;
+        #date {
+            font-size: 24px;
+            text-align: center;
+            color: #555;
+            margin-top: 10px;
         }
         
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+        .calendar {
             width: 100%;
-            max-width: 1000px;
+            border-collapse: collapse;
         }
         
-        .footer-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-            padding: 10px 15px;
-            border-radius: 6px;
-            white-space: nowrap;
-            position: relative;
-            z-index: 1;
-            flex: 1;
-            min-width: 0;
-            justify-content: center;
+        .calendar th, .calendar td {
+            border: 1px solid #ffe6ea;
+            padding: 10px;
             text-align: center;
         }
         
+        .calendar th {
+            background-color: #ffccd5;
+            color: #ff4d79;
+        }
+        
+        .calendar td:hover {
+            background-color: #ffe6ea;
+        }
+        
+        .today {
+            background-color: #ff4d79;
+            color: white;
+            border-radius: 50%;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+        
+        /* 链接生成器页面样式 */
+        .page {
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        /* 底部链接样式 */
+        .footer-links {
+            background-color: #ff4d79;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+        
         .footer-links a:hover {
-            color: var(--accent-color);
-            transform: translateY(-2px);
-            background-color: rgba(52, 152, 219, 0.1);
+            color: #ffccd5;
+            text-decoration: underline;
         }
         
-        @media (max-width: 768px) {
-            .convert-buttons {
-                flex-direction: column;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .action-btn {
-                width: 100%;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .file-upload {
-                width: 100%;
-                justify-content: flex-end;
-            }
-            
-            .toast {
-                bottom: 15px;
-                width: 90%;
-                text-align: center;
-            }
-            
-            /* 优化底部链接布局 */
-            .footer-links {
-                flex-direction: row;
-                gap: 8px;
-                padding: 12px;
-            }
-            
-            .footer-links a {
-                padding: 10px 8px;
-                font-size: 0.8rem;
-                flex-direction: column;
-                text-align: center;
-                gap: 5px;
-                white-space: normal;
-                line-height: 1.3;
-                min-height: 60px;
-                justify-content: center;
-            }
-            
-            .footer-links a i {
-                font-size: 1rem;
-                margin-bottom: 2px;
-            }
-        }
-
-        /* 针对更小屏幕的额外调整 */
-        @media (max-width: 480px) {
-            .footer-links {
-                gap: 6px;
-                padding: 10px;
-            }
-            
-            .footer-links a {
-                padding: 8px 5px;
-                font-size: 0.75rem;
-                min-height: 55px;
-            }
-            
-            .btn {
-                padding: 10px 14px;
-            }
+        .footer-links a::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
         }
         
-        /* 添加点击效果 */
-        .btn:active, .footer-links a:active {
-            transform: translateY(1px) !important;
+        .footer-links a:hover::after {
+            opacity: 1;
+            visibility: visible;
         }
         
-        /* 确保按钮在移动设备上易于点击 */
-        @media (max-width: 768px) {
-            .btn, .footer-links a {
-                min-height: 44px;
-                min-width: 44px;
-            }
+        .copyright {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #ff80ab;
+            color: white;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>TXT/M3U播放列表转换工具</h1>
-            <p class="subtitle">简单快捷的播放列表格式转换</p>
-        </header>
-        
-        <div class="main-content">
-            <div class="input-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-pen"></i>输入内容</h2>
-                    <div class="file-upload">
-                        <label for="fileInput" class="btn btn-outline">
-                            <i class="fas fa-upload"></i>上传文件
-                        </label>
-                        <input type="file" id="fileInput" class="file-input" accept=".txt,.m3u">
+    <!-- 导航栏 -->
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showPage('home')">主页</a></li>
+            <li><a href="#" onclick="showPage('link-generator')">批量链接生成器</a></li>
+        </ul>
+    </nav>
+    
+    <!-- 主页内容 -->
+    <div id="home" class="page active">
+        <div class="container">
+            <h1>欢迎来到我的网站</h1>
+            
+            <div class="clock-calendar">
+                <div class="clock-container">
+                    <h2>实时时钟</h2>
+                    <div id="clock">00:00:00</div>
+                    <div id="date">0000年00月00日 星期X</div>
+                </div>
+                
+                <div class="calendar-container">
+                    <h2>日历</h2>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <p>这是一个包含实时时钟和日历的主页，点击上方导航可以切换到批量链接生成器工具。</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 批量链接生成器页面 -->
+    <div id="link-generator" class="page">
+        <!-- 这里放置您提供的批量链接生成器代码 -->
+        <div class="container">
+            <!-- 从您提供的代码中提取主要内容 -->
+            <h1>在线网址链接批量生成器</h1>
+            <div class="alert alert-success" style="font-size:16px; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px;">
+                这款链接批量生成器可按照指定的格式与要求批量生成链接地址，工具下方配有详尽的使用说明，非常简单易用。
+            </div>
+            
+            <div style="margin-bottom: 8px; font-size:14px;">
+                <div id="main_content">
+                    <table border="0" align="center" cellpadding="0" cellspacing="0" class="table" style="width: 100%;">
+                        <tbody><tr><td align="center">
+                            <label for="scq_url">网址</label>：<input type="text" id="scq_url" size="46" value="http://www.a.com/(*).jpg"> 变量用(*)号表示
+                            
+                            <br><br>
+                            <input name="scq_radio" type="radio" id="scq_dcsl" checked="checked"> <label for="scq_dcsl">等差数列</label>
+                            <label for="scq_dcsl_sx">首项</label>：<input type="text" id="scq_dcsl_sx" size="5" value="1">
+                            <label for="scq_dcsl_xs">项数</label>：<input type="text" id="scq_dcsl_xs" size="5" value="5">
+                            <label for="scq_dcsl_gc">公差</label>：<input type="text" id="scq_dcsl_gc" size="5" value="1"> 
+                            <input type="checkbox" id="scq_dcsl_bl"><label for="scq_dcsl_bl">补0</label>
+                            <input type="checkbox" id="scq_dcsl_dx"><label for="scq_dcsl_dx">倒序</label>
+                            
+                            <br><br>
+                            <input type="radio" name="scq_radio" id="scq_dbsl"> <label for="scq_dbsl">等比数列</label>
+                            <label for="scq_dbsl_sx">首项</label>：<input type="text" id="scq_dbsl_sx" size="5" value="1">
+                            <label for="scq_dbsl_xs">项数</label>：<input type="text" id="scq_dbsl_xs" size="5" value="5">
+                            <label for="scq_dbsl_gc">公比</label>：<input type="text" id="scq_dbsl_gb" size="5" value="2"> 
+                            <input type="checkbox" id="scq_dbsl_bl"><label for="scq_dbsl_bl">补0</label>
+                            <input type="checkbox" id="scq_dbsl_dx"><label for="scq_dbsl_dx">倒序</label>
+                            
+                            <br><br>
+                            <input type="radio" name="scq_radio" id="scq_zmbh"> <label for="scq_zmbh">字母变化</label>
+                            <label for="scq_zmbh_c">从</label>：<input type="text" id="scq_zmbh_c" size="5" value="a">
+                            <label for="scq_zmbh_d">到</label>：<input type="text" id="scq_zmbh_d" size="5" value="z">
+                            <input type="checkbox" id="scq_zmbh_dx"><label for="scq_zmbh_dx">倒序</label>
+                            
+                            <br><br>
+                            <div align="center"><input type="button" onclick="generateLinks()" value="生成" class="btn btn-success" style="background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;"></div>
+                            <br>
+                            
+                            <label for="scq_jieguo">结果：</label><br>
+                            <textarea id="scq_jieguo" rows="20" class="form-control" onclick="this.focus();this.select()" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+                            
+                            </td></tr>
+                    </tbody></table>
+                    
+                    <h2 align="center" class="alert alert-warning" style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px;">链接地址批量生成器用法说明：</h2>
+                    <div class="alert alert-info" style="font-size:16px; background-color: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px;">
+                        <p>批量下载功能可以方便的创建多个包含共同特征的下载任务。例如网站A提供了10个这样的下载链接：</p>
+                        <p>http://www.a.com/01.zip</p>
+                        <p>http://www.a.com/02.zip</p>
+                        <p>...（中间省略）</p>
+                        <p>http://www.a.com/10.zip</p>
+                        <p>这10个地址只有数字部分不同，如果用(*)表示不同的部分，这些地址可以写成：</p>
+                        <p>http://www.a.com/(*).zip</p>
+                        <p>同时，通配符长度指的是这些地址不同部分数字的长度，例如：</p>
+                        <p>从01.zip－10.zip，通配符长度是2；</p>
+                        <p>从001.zip－010.zip，通配符长度是3。</p>
+                        <p>注意，在填写从xxx到xxx的时候，虽然是从01到10或者是001到010，但是，当您设定了通配符长度以后，就只需要填写成从1到10。 填写完成后，在示意窗口会显示第一个和最后一个任务的具体链接地址，您可以检查是否正确，然后点确定完成操作。</p>
+                        <p>应用举例：<br>1.百度站长后台批量提交待收录文章可以使用该工具将文章链接批量生成后进行提交。<br>2.网址批量抓取可使用该工具批量生成链接地址。</p>
                     </div>
                 </div>
-                <textarea id="inputArea" placeholder="在此粘贴TXT或M3U格式的播放列表内容，或上传文件..."></textarea>
-                
-                <div class="convert-buttons">
-                    <button id="convertToM3U" class="btn btn-primary convert-btn">
-                        <i class="fas fa-arrow-right"></i>转换为M3U格式
-                    </button>
-                    <button id="convertToTXT" class="btn btn-primary convert-btn">
-                        <i class="fas fa-arrow-right"></i>转换为TXT格式
-                    </button>
-                </div>
-            </div>
-            
-            <div class="output-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-file-export"></i>输出内容</h2>
-                </div>
-                <textarea id="outputArea" placeholder="转换后的内容将显示在这里..." readonly=""></textarea>
-                <div class="output-actions">
-                    <button id="copyOutput" class="btn btn-accent">
-                        <i class="fas fa-copy"></i>复制内容
-                    </button>
-                </div>
-            </div>
-            
-            <div class="action-buttons">
-                <button id="clearContent" class="btn btn-danger action-btn">
-                    <i class="fas fa-broom"></i>清除内容
-                </button>
-                <button id="downloadFile" class="btn btn-secondary action-btn">
-                    <i class="fas fa-download"></i>下载文件
-                </button>
             </div>
         </div>
     </div>
 
+    <!-- 底部链接区域 -->
     <div class="footer-links">
-        <a href="https://gyjune.kesug.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-home"></i>我的主页</a>
-        <a href="https://gyjune.infy.uk/sc.html" target="_blank" rel="noopener noreferrer"><i class="fas fa-upload"></i>直播源上传工具</a>
-        <a href="https://gyjune.infy.uk/txt.html" target="_blank" rel="noopener noreferrer"><i class="fas fa-exchange-alt"></i>直播源转换工具</a>
-        <a href="https://gyjune.infy.uk/" target="_blank" rel="noopener noreferrer"><i class="fas fa-lock"></i>点播源加密工具</a>
+        <a data-tooltip="打开我的工具箱" onclick="openToolbox()">我的工具箱</a>
+        <a data-tooltip="点击显示邮箱地址" onclick="showEmail()">我的邮箱</a>
+        <a data-tooltip="访问我的微博" onclick="openWeibo()">我的微博</a>
+        <!-- 添加导航地址 -->
+        <a data-tooltip="访问我的导航地址" onclick="openNav1()">格式转换</a>
+        <a data-tooltip="访问我的另一个导航地址" onclick="openNav2()">加密工具</a>
+        <!-- 添加格式转换工具链接 -->
+        <a data-tooltip="格式转换工具" onclick="openFormatTool()">格式转换工具</a>
+    </div>
+    
+    <div class="copyright">
+        Copyright © 2025 - 多功能网站 | 版权所有
     </div>
 
-    <div id="toast" class="toast">内容已复制到剪贴板</div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputArea = document.getElementById('inputArea');
-            const outputArea = document.getElementById('outputArea');
-            const fileInput = document.getElementById('fileInput');
-            const convertToM3U = document.getElementById('convertToM3U');
-            const convertToTXT = document.getElementById('convertToTXT');
-            const clearContent = document.getElementById('clearContent');
-            const downloadFile = document.getElementById('downloadFile');
-            const copyOutput = document.getElementById('copyOutput');
-            const toast = document.getElementById('toast');
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
             
-            // 显示提示信息
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
+            // 显示选中的页面
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // 时钟功能
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekday = weekdays[now.getDay()];
+            
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 星期${weekday}`;
+            
+            // 每秒更新一次
+            setTimeout(updateClock, 1000);
+        }
+        
+        // 日历功能
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            // 获取当月第一天是星期几
+            const firstDay = new Date(year, month, 1).getDay();
+            // 获取当月有多少天
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarEl = document.getElementById('calendar');
+            let calendarHTML = '<table class="calendar"><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr><tr>';
+            
+            // 填充空白
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<td></td>';
             }
             
-            // 文件上传处理
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
+            // 填充日期
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
                 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    inputArea.value = e.target.result;
-                };
-                reader.readAsText(file);
-            });
+                if (isToday) {
+                    calendarHTML += `<td><span class="today">${day}</span></td>`;
+                } else {
+                    calendarHTML += `<td>${day}</td>`;
+                }
+                
+                // 换行
+                if ((firstDay + day) % 7 === 0) {
+                    calendarHTML += '</tr><tr>';
+                }
+            }
             
-            // TXT转M3U
-            convertToM3U.addEventListener('click', function() {
-                const txtContent = inputArea.value.trim();
-                if (!txtContent) {
-                    showToast('请输入要转换的内容');
-                    return;
-                }
-                
-                let m3uContent = '#EXTM3U x-tvg-url="https://live.fanmingming.cn/e.xml"\n';
-                let currentGroup = '';
-                
-                const lines = txtContent.split('\n');
-                let channelId = 1;
-                
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine) continue;
-                    
-                    // 检查是否是分组行
-                    if (trimmedLine.endsWith(',#genre#')) {
-                        currentGroup = trimmedLine.replace(',#genre#', '');
-                        continue;
-                    }
-                    
-                    // 处理频道行
-                    const parts = trimmedLine.split(',');
-                    if (parts.length >= 2) {
-                        const channelName = parts[0];
-                        const channelUrl = parts[1];
-                        
-                        m3uContent += `#EXTINF:-1 tvg-id="${channelId}" tvg-name="${channelName}" tvg-logo="https://live.fanmingming.cn/tv/${channelName}.png" group-title="${currentGroup}",${channelName}\n`;
-                        m3uContent += `${channelUrl}\n`;
-                        
-                        channelId++;
-                    }
-                }
-                
-                outputArea.value = m3uContent;
-                showToast('已转换为M3U格式');
-            });
+            calendarHTML += '</tr></table>';
+            calendarEl.innerHTML = calendarHTML;
+        }
+        
+        // 链接生成功能（简化版）
+        function generateLinks() {
+            const urlPattern = document.getElementById('scq_url').value;
+            let results = "";
             
-            // M3U转TXT
-            convertToTXT.addEventListener('click', function() {
-                const m3uContent = inputArea.value.trim();
-                if (!m3uContent) {
-                    showToast('请输入要转换的内容');
-                    return;
+            if (document.getElementById('scq_dcsl').checked) {
+                // 等差数列
+                const start = parseInt(document.getElementById('scq_dcsl_sx').value);
+                const count = parseInt(document.getElementById('scq_dcsl_xs').value);
+                const step = parseInt(document.getElementById('scq_dcsl_gc').value);
+                const padZero = document.getElementById('scq_dcsl_bl').checked;
+                const reverse = document.getElementById('scq_dcsl_dx').checked;
+                
+                let numbers = [];
+                for (let i = 0; i < count; i++) {
+                    numbers.push(start + i * step);
                 }
                 
-                let txtContent = '';
-                let currentGroup = '';
+                if (reverse) numbers.reverse();
                 
-                const lines = m3uContent.split('\n');
+                numbers.forEach(num => {
+                    const value = padZero ? String(num).padStart(2, '0') : num;
+                    results += urlPattern.replace('(*)', value) + '\n';
+                });
+            }
+            else if (document.getElementById('scq_zmbh').checked) {
+                // 字母变化
+                const fromChar = document.getElementById('scq_zmbh_c').value.charCodeAt(0);
+                const toChar = document.getElementById('scq_zmbh_d').value.charCodeAt(0);
+                const reverse = document.getElementById('scq_zmbh_dx').checked;
                 
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    
-                    // 检查是否是EXTINF行
-                    if (line.startsWith('#EXTINF:')) {
-                        // 提取组信息
-                        const groupMatch = line.match(/group-title="([^"]*)"/);
-                        if (groupMatch && groupMatch[1]) {
-                            const newGroup = groupMatch[1];
-                            if (newGroup !== currentGroup) {
-                                currentGroup = newGroup;
-                                txtContent += `${currentGroup},#genre#\n`;
-                            }
-                        }
-                        
-                        // 提取频道名称
-                        const nameMatch = line.match(/,(.*)$/);
-                        if (nameMatch && nameMatch[1]) {
-                            const channelName = nameMatch[1];
-                            // 下一个行应该是URL
-                            if (i + 1 < lines.length) {
-                                const urlLine = lines[i + 1].trim();
-                                if (urlLine && !urlLine.startsWith('#')) {
-                                    txtContent += `${channelName},${urlLine}\n`;
-                                    i++; // 跳过URL行
-                                }
-                            }
-                        }
-                    }
+                let chars = [];
+                for (let i = fromChar; i <= toChar; i++) {
+                    chars.push(String.fromCharCode(i));
                 }
                 
-                outputArea.value = txtContent;
-                showToast('已转换为TXT格式');
-            });
+                if (reverse) chars.reverse();
+                
+                chars.forEach(char => {
+                    results += urlPattern.replace('(*)', char) + '\n';
+                });
+            }
             
-            // 清除内容
-            clearContent.addEventListener('click', function() {
-                inputArea.value = '';
-                outputArea.value = '';
-                fileInput.value = '';
-                showToast('内容已清除');
-            });
-            
-            // 复制到剪贴板
-            copyOutput.addEventListener('click', function() {
-                if (!outputArea.value) {
-                    showToast('没有内容可复制');
-                    return;
-                }
-                
-                outputArea.select();
-                document.execCommand('copy');
-                showToast('内容已复制到剪贴板');
-            });
-            
-            // 下载文件
-            downloadFile.addEventListener('click', function() {
-                const content = outputArea.value;
-                if (!content) {
-                    showToast('没有内容可下载');
-                    return;
-                }
-                
-                const isM3U = content.includes('#EXTM3U');
-                const format = isM3U ? 'm3u' : 'txt';
-                const filename = `playlist.${format}`;
-                
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                
-                // 清理
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 100);
-                
-                showToast(`文件已下载: ${filename}`);
-            });
-        });
+            document.getElementById('scq_jieguo').value = results;
+        }
+        
+        // 显示邮箱功能
+        function showEmail() {
+            alert('我的邮箱地址是：gyjune@126.com');
+        }
+        
+        // 打开工具箱
+        function openToolbox() {
+            window.open('https://link3.cc/gyjune', '_blank');
+        }
+        
+        // 打开微博
+        function openWeibo() {
+            window.open('https://weibo.com/u/1771411553', '_blank');
+        }
+        
+        // 打开格式转换
+        function openNav1() {
+            window.open('https://gyjune.gt.tc', '_blank');
+        }
+        
+        // 打开加密工具
+        function openNav2() {
+            window.open('https://gyjune.infy.uk', '_blank');
+        }
+        
+        // 打开格式转换工具
+        function openFormatTool() {
+            window.open('https://gyjune.kesug.com/1.html', '_blank');
+        }
+        
+        // 初始化
+        window.onload = function() {
+            updateClock();
+            renderCalendar();
+        };
     </script>
 </body>
 </html>

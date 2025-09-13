@@ -1,844 +1,739 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多功能工具箱 - 直播源转换与时光记忆</title>
+    <title>TXT与M3U格式互转工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #e91e63;
+            --secondary-color: #ad1457;
+            --accent-color: #ff80ab;
+            --dark-color: #1a1a2e;
+            --light-color: #fce4ec;
+            --success-color: #4caf50;
+            --info-color: #2196f3; /* 蓝色 */
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --purple-color: #9c27b0; /* 紫色 */
+            --glass-effect: rgba(248, 249, 250, 0.9);
+            --glass-border: 1px solid rgba(108, 117, 125, 0.2);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #38001f;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            background-color: #f8f9fa;
         }
-        
-        .container {
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1000px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        header {
-            background: #2c3e50;
-            color: white;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-        }
-        
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        header p {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        
-        .tabs {
-            display: flex;
-            background: #34495e;
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            background: #34495e;
-            color: white;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .tab-btn.active {
-            background: #2c3e50;
-            box-shadow: inset 0 -4px 0 #3498db;
-        }
-        
-        .tab-btn:hover {
-            background: #2c3e50;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 25px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .section-title {
-            font-size: 22px;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .input-area {
-            margin-bottom: 25px;
-        }
-        
-        .file-upload {
-            margin-bottom: 15px;
-            position: relative;
-        }
-        
-        .file-upload-label {
-            display: block;
-            padding: 12px 15px;
+            height: 100%;
+            z-index: -1;
             background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
-        
-        .file-upload-label:hover {
-            border-color: #3498db;
-            background: #e8f4fd;
-        }
-        
-        .file-upload-label i {
-            margin-right: 8px;
-            color: #3498db;
-        }
-        
-        input[type="file"] {
+
+        .bg-overlay {
             position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(2px);
         }
-        
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(88, 0, 46, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .mode-switch {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #880e4f;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary-color);
+        }
+
+        .mode-btn.active-mode {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+        }
+
+        .mode-btn i {
+            font-size: 1rem;
+        }
+
+        .input-output-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .input-output-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .text-container h3 {
+            margin-bottom: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #880e4f;
+        }
+
+        .text-container h3 i {
+            color: var(--primary-color);
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-btn {
+            padding: 0.8rem 1.8rem;
+            background: var(--purple-color); /* 紫色背景 */
+            color: white; /* 白色文字 */
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+            margin: 0 0.5rem;
+        }
+
+        .file-upload-btn:hover {
+            background: #7b1fa2; /* 深紫色悬停效果 */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.2);
+        }
+
         textarea {
             width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            height: 300px;
+            padding: 1rem;
+            border-radius: 10px;
+            border: var(--glass-border);
+            background: rgba(255, 255, 255, 0.9);
+            color: #38001f;
+            font-family: 'Noto Sans SC', sans-serif;
             resize: vertical;
-            min-height: 200px;
-            font-family: monospace;
-            font-size: 14px;
-            line-height: 1.5;
+            transition: var(--transition);
         }
-        
+
         textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
         }
-        
-        .options {
-            margin: 20px 0;
+
+        #outputArea {
+            background: rgba(255, 255, 255, 0.95);
         }
-        
-        .epg-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        
-        .checkbox-container {
+
+        .button-group {
             display: flex;
-            align-items: center;
-            margin-bottom: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-        
-        .checkbox-container input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-        }
-        
-        .convert-btn {
-            width: 100%;
-            padding: 15px;
-            background: #27ae60;
-            color: white;
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 500;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 0.5rem;
         }
-        
-        .convert-btn:hover {
-            background: #219653;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
-        }
-        
-        .format-example {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        
-        .format-example h4 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .format-example pre {
-            background: #2c3e50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        
-        .result-area {
-            margin-top: 30px;
-        }
-        
-        .result-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .result-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .copy-btn {
-            background: #3498db;
+
+        .btn-primary {
+            background: var(--primary-color);
             color: white;
         }
-        
-        .copy-btn:hover {
-            background: #2980b9;
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.2);
         }
-        
-        .download-btn {
-            background: #9b59b6;
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #880e4f;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
             color: white;
         }
-        
-        .download-btn:hover {
-            background: #8e44ad;
+
+        .btn-success:hover {
+            background: #3d8b40;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
         }
-        
-        /* 咪咕工具链接样式 */
-        .migu-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .migu-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 25px;
+
+        .btn-info {
+            background: var(--info-color); /* 蓝色背景 */
             color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
         }
-        
-        .migu-sd {
-            background: #2e7d32; /* 深绿色 */
-        }
-        
-        .migu-sd:hover {
-            background: #1b5e20;
+
+        .btn-info:hover {
+            background: #0b7dda; /* 深蓝色悬停效果 */
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);
         }
-        
-        .migu-hd {
-            background: #c62828; /* 大红色 */
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
         }
-        
-        .migu-hd:hover {
-            background: #b71c1c;
+
+        .btn-danger:hover {
+            background: #d32f2f;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.2);
         }
-        
-        .proxy-btn {
-            background: #3498db; /* 蓝色 */
-        }
-        
-        .proxy-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-        
+
         footer {
             text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            background: #f8f9fa;
+            margin-top: 2rem;
+            color: rgba(136, 14, 79, 0.7);
+            font-size: 0.9rem;
         }
-        
-        /* 粉红时光记忆样式 */
-        .clock-calendar-box {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            margin-bottom: 30px;
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
         }
-        
-        .clock {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #d64d86;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+        footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
         }
-        
-        .date {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            color: #8a5a8b;
-        }
-        
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-top: 20px;
-        }
-        
-        .calendar-header {
-            grid-column: span 7;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #d64d86;
-            font-weight: 600;
-        }
-        
-        .weekday {
-            font-weight: 600;
-            color: #8a5a8b;
-        }
-        
-        .day {
-            height: 30px;
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            gap: 0.5rem;
         }
-        
-        .today {
-            background: #ff66a3;
-            color: white;
-            font-weight: 700;
+
+        .notification.show {
+            transform: translateX(0);
         }
-        
-        .article {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        .drop-area {
+            position: relative;
+        }
+
+        .drop-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            height: 100%;
+            background: rgba(233, 30, 99, 0.9);
+            border: 2px dashed var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 10;
+            color: white;
         }
-        
-        .pink-title {
-            color: #d64d86;
-            text-align: center;
-            margin-bottom: 25px;
+
+        .drop-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drop-overlay i {
             font-size: 2rem;
+            margin-bottom: 1rem;
         }
-        
-        .pink-text {
-            line-height: 1.8;
-            margin-bottom: 15px;
-            text-align: justify;
-            font-size: 1.05rem;
-        }
-        
-        .signature {
-            text-align: right;
-            font-style: italic;
-            margin-top: 20px;
-            color: #8a5a8b;
-        }
-        
-        @media (max-width: 768px) {
-            .result-buttons {
-                flex-direction: column;
-            }
-            
-            .migu-links {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .migu-btn {
-                width: 80%;
-                justify-content: center;
-            }
-            
-            header h1 {
-                font-size: 24px;
-            }
-            
-            .clock {
-                font-size: 2.5rem;
-            }
-            
-            .date {
-                font-size: 1.2rem;
-            }
+
+        #fileInput {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <div class="bg-container" id="dynamicBg"></div>
+    <div class="bg-overlay"></div>
+
     <div class="container">
         <header>
-            <h1><i class="fas fa-toolbox"></i> 多功能工具箱</h1>
-            <p>直播源格式转换与时光记忆</p>
+            <h1>TXT与M3U格式互转工具</h1>
+            <p class="subtitle">高效、简洁、专业的多媒体列表转换解决方案</p>
         </header>
-        
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="converter">
-                <i class="fas fa-sync-alt"></i> 直播源转换
-            </button>
-            <button class="tab-btn" data-tab="memory">
-                <i class="fas fa-clock"></i> 时光记忆
-            </button>
-        </div>
-        
-        <div class="tab-content active" id="converter">
-            <div class="input-area">
-                <h2 class="section-title"><i class="fas fa-pencil-alt"></i> M3U 与 TXT 格式转换</h2>
-                
-                <div class="file-upload">
-                    <label for="file-upload" class="file-upload-label">
-                        <i class="fas fa-upload"></i> 上传文件（M3U 或 TXT）
-                    </label>
-                    <input type="file" id="file-upload" accept=".m3u,.txt">
+
+        <main>
+            <div class="card">
+                <div class="mode-switch">
+                    <button id="txtToM3U" class="mode-btn" onclick="switchMode('txt2m3u')">
+                        <i class="fas fa-exchange-alt"></i> TXT → M3U
+                    </button>
+                    <button id="m3uToTxt" class="mode-btn active-mode" onclick="switchMode('m3u2txt')">
+                        <i class="fas fa-exchange-alt"></i> M3U → TXT
+                    </button>
                 </div>
-                
-                <textarea id="input-content" placeholder="或者直接粘贴 M3U 或 TXT 文件内容..."></textarea>
-                
-                <div class="options">
-                    <input type="text" id="epg-url" class="epg-input" placeholder="EPG URL (可选, 默认为 https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz)">
-                    
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="keep-groups">
-                        <label for="keep-groups">保留分组信息</label>
+
+                <div class="input-output-container">
+                    <div class="text-container">
+                        <div class="input-header">
+                            <h3 id="inputLabel"><i class="fas fa-file-code"></i> M3U格式源:</h3>
+                        </div>
+                        <div class="drop-area" id="dropArea">
+                            <textarea id="inputArea" placeholder="在此粘贴M3U内容..."></textarea>
+                            <div class="drop-overlay" id="dropOverlay">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>拖放文件到此处</p>
+                            </div>
+                        </div>
+                        <input type="file" id="fileInput" accept=".txt,.m3u,.m3u8">
+                    </div>
+
+                    <div class="text-container">
+                        <h3 id="outputLabel"><i class="fas fa-paste"></i> TXT格式结果:</h3>
+                        <textarea id="outputArea" readonly></textarea>
                     </div>
                 </div>
-                
-                <button id="convert" class="convert-btn">
-                    <i class="fas fa-exchange-alt"></i> 转换
-                </button>
-                
-                <div class="format-example">
-                    <h4><i class="fas fa-info-circle"></i> TXT 格式示例：</h4>
-                    <pre>CCTV-1,http://example.com/stream.m3u8
-央视,#genre#</pre>
-                </div>
-            </div>
-            
-            <div class="result-area">
-                <h2 class="section-title"><i class="fas fa-result"></i> 转换结果</h2>
-                <textarea id="output" readonly></textarea>
-                
-                <div class="result-buttons">
-                    <button id="copyBtn" class="result-btn copy-btn">
-                        <i class="fas fa-copy"></i> 复制全部结果
+
+                <div class="button-group">
+                    <button class="btn btn-primary pulse" onclick="convert()">
+                        <i class="fas fa-sync-alt"></i> 转换格式
                     </button>
-                    <button id="download-btn" class="result-btn download-btn" style="display: none;">
-                        <i class="fas fa-download"></i> 下载转换后的文件
+                    <button class="btn btn-danger" onclick="clearScreen()">
+                        <i class="fas fa-trash-alt"></i> 清除内容
                     </button>
+                    <button class="btn btn-success" onclick="copyResult()">
+                        <i class="fas fa-copy"></i> 复制结果
+                    </button>
+                    <button class="btn btn-info" onclick="saveFile()">
+                        <i class="fas fa-download"></i> 保存文件
+                    </button>
+                    <label for="fileInput" class="file-upload-btn">
+                        <i class="fas fa-upload"></i> 上传文件
+                    </label>
                 </div>
             </div>
-        </div>
-        
-        <div class="tab-content" id="memory">
-            <div class="clock-calendar-box">
-                <div class="clock" id="clock">00:00:00</div>
-                <div class="date" id="date">2023年11月15日 星期三</div>
-                <div class="calendar">
-                    <div class="calendar-header" id="calendar-header">十一月 2023</div>
-                    <!-- 星期行 -->
-                    <div class="weekday">日</div>
-                    <div class="weekday">一</div>
-                    <div class="weekday">二</div>
-                    <div class="weekday">三</div>
-                    <div class="weekday">四</div>
-                    <div class="weekday">五</div>
-                    <div class="weekday">六</div>
-                    <!-- 日期由JavaScript生成 -->
-                </div>
-            </div>
-            
-            <div class="article">
-                <h1 class="pink-title">时光絮语</h1>
-                <p class="pink-text">晨光微熹，时光在粉色的梦境中缓缓流淌。每一秒都是宇宙馈赠的独特礼物，每一刻都是生命编织的不可重复图案。</p>
-                <p class="pink-text">坐在窗边，看光影在墙面游走，听时钟滴答细语。时光如水，从指缝间悄然滑过，不留痕迹却改变万物。昨日之花已凋零，今日之蕾正待放。</p>
-                <p classpink-text">我们总在追逐时间的脚步，却忘了驻足欣赏沿途风景。或许，生命最美的不是终点，而是沿途收集的晨露、晚霞与星光。</p>
-                <p class="pink-text">在这粉色的时光里，愿你我都能温柔以待每一个当下，珍藏每一份感动，在流转的时光中，找到属于自己的永恒。</p>
-                <div class="signature">—— 记录于一个宁静的午后</div>
-            </div>
-        </div>
-        
-        <!-- 修改后的工具链接部分，将静态m3u8按钮与其他两个按钮并列 -->
-        <div class="migu-links">
-            <a href="http://gyjune.kesug.com/migu.html" target="_blank" class="migu-btn migu-sd">
-                <i class="fas fa-tv"></i> 咪咕源普清批量工具
-            </a>
-            <a href="http://gyjune.kesug.com/mggq.html" target="_blank" class="migu-btn migu-hd">
-                <i class="fas fa-hd-tv"></i> 咪咕源高清批量工具
-            </a>
-            <a href="http://nn.7x9d.cn/xzc2.php" target="_blank" class="migu-btn proxy-btn">
-                <i class="fas fa-link"></i> 静态m3u8直播通用代理
-            </a>
-        </div>
-        
-        <footer>
-            <p>© 2025 多功能工具箱 | 本工具仅用于技术学习交流</p>
+        </main>
+
+        <footer id="copyright">
+            © 2025 <a href="https://gyjune.kesug.com" target="_blank">我的主页</a>
         </footer>
     </div>
 
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">没有内容可保存</span>
+    </div>
+
     <script>
-        // 选项卡切换功能
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                // 移除所有活动状态
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // 添加当前活动状态
-                button.classList.add('active');
-                document.getElementById(button.dataset.tab).classList.add('active');
-            });
-        });
-        
-        // 直播源转换功能
-        // 判断是否是 M3U 格式
-        function isM3U(content) {
-            return content.includes('#EXTM3U');
+        // 当前模式
+        let currentMode = 'm3u2txt';
+
+        // 显示通知
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.classList.remove('error');
+            
+            if (isError) {
+                notification.classList.add('error');
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
 
-        // 验证 URL 是否有效
-        function isValidUrl(url) {
+        // 切换模式
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
+            document.getElementById(mode === 'txt2m3u' ? 'txtToM3U' : 'm3uToTxt').classList.add('active-mode');
+            
+            document.getElementById('inputLabel').innerHTML = mode === 'txt2m3u' ? 
+                '<i class="fas fa-paste"></i> TXT格式源:' : '<i class="fas fa-file-code"></i> M3U格式源:';
+            document.getElementById('outputLabel').innerHTML = mode === 'txt2m3u' ? 
+                '<i class="fas fa-file-code"></i> M3U格式结果:' : '<i class="fas fa-paste"></i> TXT格式结果:';
+            document.getElementById('inputArea').placeholder = mode === 'txt2m3u' ? 
+                '在此粘贴TXT内容...' : '在此粘贴M3U内容...';
+            
+            // 清空输出区域
+            document.getElementById('outputArea').value = '';
+            
+            // 给按钮添加脉冲动画
+            const convertBtn = document.querySelector('.btn-primary');
+            convertBtn.classList.add('pulse');
+        }
+
+        // 转换函数
+        function convert() {
             try {
-                new URL(url);
-                return true;
-            } catch {
-                return false;
+                currentMode === 'txt2m3u' ? convertToM3U() : convertToTXT();
+                
+                // 移除按钮脉冲动画
+                const convertBtn = document.querySelector('.btn-primary');
+                convertBtn.classList.remove('pulse');
+                
+                showNotification('转换成功！');
+            } catch (error) {
+                showNotification('转换出错: ' + error.message, true);
             }
         }
 
-        // 解析 M3U 转为 TXT
-        function parseM3UToTXT(m3uContent, keepGroups) {
-            const lines = m3uContent.split('\n');
-            const channels = {};
-            let currentGroup = '未分组';
+        // 转换为M3U
+        function convertToM3U() {
+            const input = document.getElementById('inputArea').value;
+            if (!input.trim()) {
+                throw new Error('请输入内容');
+            }
+            
+            const lines = input.split('\n').filter(line => line.trim() !== '');
+            let m3u = '#EXTM3U x-tvg-url="https://live.fanmingming.cn/e.xml"\n';
+            let currentGroup = null;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed.includes('#genre#')) {
+                    currentGroup = trimmed.replace(',#genre#', '');
+                } else if (trimmed) {
+                    const [name, url] = trimmed.split(',').map(s => s.trim());
+                    if (!name || !url) {
+                        throw new Error('格式错误: 每行应为"频道名称,URL"格式');
+                    }
+                    
+                    const processedName = name.replace(/(CCTV|CETV)-\d+.*/, '$1$2');
+                    m3u += `#EXTINF:-1 tvg-name="${processedName}" tvg-logo="https://live.fanmingming.cn/tv/${processedName}.png"`;
+                    if (currentGroup) m3u += ` group-title="${currentGroup}"`;
+                    m3u += `,${name}\n${url}\n`;
+                }
+            });
+
+            document.getElementById('outputArea').value = m3u;
+        }
+
+        // 转换为TXT
+        function convertToTXT() {
+            const input = document.getElementById('inputArea').value;
+            if (!input.trim()) {
+                throw new Error('请输入内容');
+            }
+            
+            const lines = input.split('\n').filter(line => line.trim() !== '');
+            let txt = '';
+            let currentGroup = null;
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line.startsWith('#EXTINF')) {
-                    const groupMatch = line.match(/group-title="([^"]*)"/) || [, '未分组'];
-                    const nameMatch = line.match(/tvg-name="([^"]*)"/) || [, line.split(',').pop() || '未知频道'];
-                    const group = groupMatch[1];
-                    const name = nameMatch[1];
-                    const url = lines[i + 1] ? lines[i + 1].trim() : '';
-
-                    if (!channels[group]) {
-                        channels[group] = [];
+                    const extinf = line;
+                    const url = lines[++i];
+                    
+                    if (!url) {
+                        throw new Error('格式错误: #EXTINF后缺少URL');
                     }
-                    channels[group].push(`${name},${url}`);
-                    currentGroup = group;
-                }
-            }
-
-            let txtContent = '';
-            if (keepGroups) {
-                for (const [group, channelList] of Object.entries(channels)) {
-                    txtContent += `${group},#genre#\n`;
-                    txtContent += channelList.join('\n') + '\n';
-                }
-            } else {
-                for (const [group, channelList] of Object.entries(channels)) {
-                    txtContent += channelList.join('\n') + '\n';
-                }
-            }
-
-            return txtContent.trim();
-        }
-
-        // 转换 TXT 转为 M3U
-        function convertTXTToM3U(txtContent, epgUrl, keepGroups) {
-            const defaultEpgUrl = "https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz";
-            const lines = txtContent.split('\n');
-            let m3uContent = `#EXTM3U x-tvg-url="${epgUrl || defaultEpgUrl}"\n`;
-            let currentGenre = '未分类';
-
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                if (trimmedLine.endsWith(',#genre#')) {
-                    currentGenre = trimmedLine.replace(',#genre#', '');
-                } else if (trimmedLine && !trimmedLine.startsWith('#')) {
-                    const [channelName, channelUrl] = trimmedLine.split(',');
-                    if (!channelName || !channelUrl) continue; // 跳过无效行
-                    const tvgLogo = `https://epg.112114.xyz/logo/${channelName}.png`;
-                    if (keepGroups) {
-                        m3uContent += `#EXTINF:-1 group-title="${currentGenre}" tvg-name="${channelName}" tvg-logo="${tvgLogo}" epg-url="${epgUrl || defaultEpgUrl}",${channelName}\n`;
-                    } else {
-                        m3uContent += `#EXTINF:-1 tvg-name="${channelName}" tvg-logo="${tvgLogo}" epg-url="${epgUrl || defaultEpgUrl}",${channelName}\n`;
+                    
+                    // 解析分组信息
+                    const groupMatch = extinf.match(/group-title="([^"]+)"/);
+                    const group = groupMatch ? groupMatch[1] : currentGroup;
+                    
+                    // 解析频道名称
+                    const nameMatch = extinf.match(/,(.*)$/);
+                    const name = nameMatch ? nameMatch[1] : '未知频道';
+                    
+                    // 处理分组变化
+                    if (group && group !== currentGroup) {
+                        currentGroup = group;
+                        txt += `\n${currentGroup},#genre#\n`;
                     }
-                    m3uContent += `${channelUrl}\n`;
+                    
+                    txt += `${name},${url}\n`;
                 }
             }
 
-            return m3uContent.trim();
+            document.getElementById('outputArea').value = txt.trim();
         }
 
-        // 显示转换结果
-        function displayResult(content) {
-            const resultTextarea = document.getElementById('output');
-            resultTextarea.value = content;
-            document.getElementById('download-btn').style.display = 'block';
+        // 清空屏幕
+        function clearScreen() {
+            document.getElementById('inputArea').value = '';
+            document.getElementById('outputArea').value = '';
+            
+            // 给按钮添加脉冲动画
+            const convertBtn = document.querySelector('.btn-primary');
+            convertBtn.classList.add('pulse');
+            
+            showNotification('已清空内容');
         }
 
-        // 下载转换后的文件
-        function downloadFile(content, isM3UInput) {
-            const timestamp = new Date().toISOString().replace(/[:.-]/g, '').slice(0, 15);
-            const fileName = `converted_${timestamp}.${isM3UInput ? 'txt' : 'm3u'}`;
+        // 复制结果
+        function copyResult() {
+            const output = document.getElementById('outputArea');
+            if (!output.value.trim()) {
+                showNotification('没有内容可复制', true);
+                return;
+            }
+            
+            output.select();
+            document.execCommand('copy');
+            showNotification('已复制到剪贴板！');
+        }
+
+        // 保存文件
+        function saveFile() {
+            const content = document.getElementById('outputArea').value;
+            if (!content.trim()) {
+                showNotification('没有内容可保存', true);
+                return;
+            }
+            
+            const extension = currentMode === 'txt2m3u' ? 'm3u' : 'txt';
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName;
+            a.download = `live.${extension}`;
             a.click();
             URL.revokeObjectURL(url);
+            
+            showNotification(`文件已保存为 live.${extension}`);
         }
 
         // 文件上传处理
-        document.getElementById('file-upload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('input-content').value = e.target.result;
-                };
-                reader.onerror = function() {
-                    alert('文件读取失败，请检查文件格式！');
-                };
-                reader.readAsText(file);
-            }
-        });
-
-        // 复制按钮事件
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            const outputTextArea = document.getElementById('output');
-            const content = outputTextArea.value.trim();
-
-            if (!content) {
-                alert('没有可复制的内容！');
-                return;
-            }
-
-            try {
-                outputTextArea.focus();
-                outputTextArea.select();
-                outputTextArea.setSelectionRange(0, content.length);
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    alert('内容已复制到剪贴板！');
-                } else {
-                    alert('复制失败，请手动选中内容并按 Ctrl+C 复制（或长按复制）。');
+        function handleFileUpload(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                document.getElementById('inputArea').value = content;
+                
+                // 根据文件扩展名自动切换模式
+                const extension = file.name.split('.').pop().toLowerCase();
+                if (extension === 'txt' && currentMode !== 'txt2m3u') {
+                    switchMode('txt2m3u');
+                } else if ((extension === 'm3u' || extension === 'm3u8') && currentMode !== 'm3u2txt') {
+                    switchMode('m3u2txt');
                 }
-            } catch (err) {
-                alert('复制失败，请手动选中内容并按 Ctrl+C 复制（或长按复制）。');
-                console.error('复制失败: ', err);
-            }
-        });
-
-        // 下载按钮事件
-        document.getElementById('download-btn').addEventListener('click', () => {
-            const content = document.getElementById('output').value;
-            const inputContent = document.getElementById('input-content').value.trim();
-            if (content) {
-                downloadFile(content, isM3U(inputContent));
-            } else {
-                alert('没有可下载的内容！');
-            }
-        });
-
-        // 转换按钮事件
-        document.getElementById('convert').addEventListener('click', function() {
-            const inputContent = document.getElementById('input-content').value.trim();
-            const epgUrl = document.getElementById('epg-url').value.trim();
-            const keepGroups = document.getElementById('keep-groups').checked;
-
-            if (!inputContent) {
-                alert('请先上传文件或粘贴 M3U/TXT 内容！');
-                return;
-            }
-
-            if (epgUrl && !isValidUrl(epgUrl)) {
-                alert('请输入有效的 EPG URL！');
-                return;
-            }
-
-            const defaultEpgUrl = "https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz";
-            let resultContent = '';
-
-            try {
-                if (isM3U(inputContent)) {
-                    resultContent = parseM3UToTXT(inputContent, keepGroups);
-                } else {
-                    resultContent = convertTXTToM3U(inputContent, epgUrl || defaultEpgUrl, keepGroups);
-                }
-                displayResult(resultContent);
-            } catch (err) {
-                alert('转换失败，请检查输入格式！');
-                console.error('转换错误: ', err);
-            }
-        });
-        
-        // 粉红时光记忆功能
-        function updateClock() {
-            const now = new Date();
+                
+                showNotification(`已加载文件: ${file.name}`);
+            };
             
-            // 更新时钟
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            reader.onerror = function() {
+                showNotification('读取文件时出错', true);
+            };
             
-            // 更新日期
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-            const weekday = weekdays[now.getDay()];
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 星期${weekday}`;
-            
-            // 更新日历
-            updateCalendar(now);
+            reader.readAsText(file);
         }
-        
-        function updateCalendar(date) {
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const today = date.getDate();
+
+        // 初始化文件上传功能
+        function initFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const dropArea = document.getElementById('dropArea');
+            const dropOverlay = document.getElementById('dropOverlay');
             
-            // 设置日历标题
-            const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
-            document.getElementById('calendar-header').textContent = `${monthNames[month]} ${year}`;
-            
-            // 获取本月第一天和最后一天
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            // 计算本月第一天是星期几（0是星期日）
-            const firstDayIndex = firstDay.getDay();
-            
-            // 计算本月总天数
-            const daysInMonth = lastDay.getDate();
-            
-            // 生成日历天数
-            const calendarContainer = document.querySelector('.calendar');
-            
-            // 清除旧的日期（保留前7个星期几标题）
-            while (calendarContainer.children.length > 7) {
-                calendarContainer.removeChild(calendarContainer.lastChild);
-            }
-            
-            // 添加空白占位（本月第一天之前的日期）
-            for (let i = 0; i < firstDayIndex; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.classList.add('day');
-                calendarContainer.appendChild(emptyDay);
-            }
-            
-            // 添加本月日期
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.classList.add('day');
-                if (i === today) {
-                    dayElement.classList.add('today');
+            // 点击上传按钮
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    handleFileUpload(this.files[0]);
                 }
-                dayElement.textContent = i;
-                calendarContainer.appendChild(dayElement);
+            });
+            
+            // 拖放事件处理
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropOverlay.classList.add('active');
+            }
+            
+            function unhighlight() {
+                dropOverlay.classList.remove('active');
+            }
+            
+            // 处理文件拖放
+            dropArea.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files && files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
         }
-        
-        // 初始加载
-        updateClock();
-        
-        // 每秒更新一次
-        setInterval(updateClock, 1000);
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initFileUpload();
+        });
     </script>
 </body>
 </html>
