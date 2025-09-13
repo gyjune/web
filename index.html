@@ -3,463 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多功能网站</title>
+    <title>我的主页</title>
     <style>
-        /* 全局样式 */
-        body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background-color: #ffe6ea; /* 粉红色背景 */
+        * {
             margin: 0;
             padding: 0;
-            color: #333;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-        }
-        
-        /* 导航栏样式 */
-        nav {
-            background-color: #ff4d79;
-            padding: 15px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-        }
-        
-        nav li {
-            margin: 0 20px;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        
-        nav a:hover {
-            background-color: #ff80ab;
-        }
-        
-        /* 内容区域样式 */
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
+            align-items: center;
             padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            flex: 1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
         }
         
         h1 {
-            color: #ff4d79;
-            text-align: center;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
-        /* 主页样式 */
-        .clock-calendar {
+        .clock-container {
             display: flex;
+            justify-content: center;
             flex-wrap: wrap;
-            justify-content: space-around;
-            margin-bottom: 30px;
+            gap: 40px;
+            margin-bottom: 40px;
+            width: 100%;
         }
         
-        .clock-container, .calendar-container {
-            background: #fff5f7;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            margin: 10px;
-            min-width: 300px;
-        }
-        
-        #clock {
-            font-size: 48px;
+        .digital-clock {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            color: #ff4d79;
-            font-weight: bold;
+            width: 300px;
         }
         
-        #date {
-            font-size: 24px;
-            text-align: center;
-            color: #555;
+        .clock-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #8f94fb;
+        }
+        
+        .time {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .date {
+            font-size: 1.2rem;
             margin-top: 10px;
+            color: #ccc;
+        }
+        
+        .analog-clock {
+            background: rgba(255, 255, 255, 0.05);
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .analog-clock::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #8f94fb;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            transform-origin: bottom center;
+            border-radius: 10px;
+        }
+        
+        .hour-hand {
+            width: 6px;
+            height: 50px;
+            background: #fff;
+            transform: translateX(-50%) rotate(0deg);
+            left: 50%;
+        }
+        
+        .minute-hand {
+            width: 4px;
+            height: 70px;
+            background: #4e54c8;
+            transform: translateX(-50%) rotate(0deg);
+            left: 50%;
+        }
+        
+        .second-hand {
+            width: 2px;
+            height: 90px;
+            background: #ff6b6b;
+            transform: translateX(-50%) rotate(0deg);
+            left: 50%;
         }
         
         .calendar {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .calendar th, .calendar td {
-            border: 1px solid #ffe6ea;
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
+            width: 300px;
+            margin-bottom: 40px;
         }
         
-        .calendar th {
-            background-color: #ffccd5;
-            color: #ff4d79;
+        .calendar-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #8f94fb;
         }
         
-        .calendar td:hover {
-            background-color: #ffe6ea;
+        .calendar-date {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 10px 0;
         }
         
-        .today {
-            background-color: #ff4d79;
-            color: white;
-            border-radius: 50%;
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
+        .calendar-month-year {
+            font-size: 1.5rem;
+            color: #ccc;
         }
         
-        /* 链接生成器页面样式 */
-        .page {
+        .calendar-day {
+            font-size: 1.2rem;
+            color: #8f94fb;
+            margin-top: 5px;
+        }
+        
+        .navigation-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-top: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+            padding: 10px 5px;
+            min-width: min-content;
+        }
+        
+        .nav-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            min-width: 160px;
+            flex-shrink: 0;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-card h3 {
+            color: #8f94fb;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+        
+        .nav-card p {
+            color: #ccc;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* 隐藏滚动条但保持可滚动 */
+        .navigation-container::-webkit-scrollbar {
             display: none;
         }
         
-        .active {
-            display: block;
+        .navigation-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         
-        /* 底部链接样式 */
-        .footer-links {
-            background-color: #ff4d79;
-            padding: 20px 0;
-            text-align: center;
-            margin-top: 30px;
+        @media (max-width: 768px) {
+            .clock-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .time {
+                font-size: 2.5rem;
+            }
+            
+            .nav-card {
+                min-width: 140px;
+                padding: 15px;
+            }
+            
+            .nav-card h3 {
+                font-size: 1rem;
+            }
+            
+            .nav-card p {
+                font-size: 0.8rem;
+            }
         }
         
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-            transition: color 0.3s;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .footer-links a:hover {
-            color: #ffccd5;
-            text-decoration: underline;
-        }
-        
-        .footer-links a::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 14px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        
-        .footer-links a:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding: 15px 0;
-            background-color: #ff80ab;
-            color: white;
-            font-size: 14px;
+        @media (max-width: 480px) {
+            .nav-card {
+                min-width: 120px;
+                padding: 12px;
+            }
+            
+            .nav-card h3 {
+                font-size: 0.9rem;
+            }
+            
+            .nav-card p {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav>
-        <ul>
-            <li><a href="#" onclick="showPage('home')">主页</a></li>
-            <li><a href="#" onclick="showPage('link-generator')">批量链接生成器</a></li>
-        </ul>
-    </nav>
-    
-    <!-- 主页内容 -->
-    <div id="home" class="page active">
-        <div class="container">
-            <h1>欢迎来到我的网站</h1>
-            
-            <div class="clock-calendar">
-                <div class="clock-container">
-                    <h2>实时时钟</h2>
-                    <div id="clock">00:00:00</div>
-                    <div id="date">0000年00月00日 星期X</div>
-                </div>
-                
-                <div class="calendar-container">
-                    <h2>日历</h2>
-                    <div id="calendar"></div>
-                </div>
+    <div class="container">
+        <header>
+            <h1>我的主页</h1>
+        </header>
+        
+        <div class="clock-container">
+            <div class="digital-clock">
+                <div class="clock-title">数字时钟</div>
+                <div class="time" id="digital-time">00:00:00</div>
+                <div class="date" id="digital-date">2023年10月10日 星期一</div>
             </div>
             
-            <div style="text-align: center; margin-top: 30px;">
-                <p>这是一个包含实时时钟和日历的主页，点击上方导航可以切换到批量链接生成器工具。</p>
+            <div class="analog-clock">
+                <div class="hour-hand" id="hour-hand"></div>
+                <div class="minute-hand" id="minute-hand"></div>
+                <div class="second-hand" id="second-hand"></div>
+            </div>
+            
+            <div class="calendar">
+                <div class="calendar-title">日历</div>
+                <div class="calendar-date" id="calendar-date">10</div>
+                <div class="calendar-month-year" id="calendar-month-year">十月 2023</div>
+                <div class="calendar-day" id="calendar-day">星期一</div>
             </div>
         </div>
-    </div>
-    
-    <!-- 批量链接生成器页面 -->
-    <div id="link-generator" class="page">
-        <!-- 这里放置您提供的批量链接生成器代码 -->
-        <div class="container">
-            <!-- 从您提供的代码中提取主要内容 -->
-            <h1>在线网址链接批量生成器</h1>
-            <div class="alert alert-success" style="font-size:16px; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px;">
-                这款链接批量生成器可按照指定的格式与要求批量生成链接地址，工具下方配有详尽的使用说明，非常简单易用。
-            </div>
-            
-            <div style="margin-bottom: 8px; font-size:14px;">
-                <div id="main_content">
-                    <table border="0" align="center" cellpadding="0" cellspacing="0" class="table" style="width: 100%;">
-                        <tbody><tr><td align="center">
-                            <label for="scq_url">网址</label>：<input type="text" id="scq_url" size="46" value="http://www.a.com/(*).jpg"> 变量用(*)号表示
-                            
-                            <br><br>
-                            <input name="scq_radio" type="radio" id="scq_dcsl" checked="checked"> <label for="scq_dcsl">等差数列</label>
-                            <label for="scq_dcsl_sx">首项</label>：<input type="text" id="scq_dcsl_sx" size="5" value="1">
-                            <label for="scq_dcsl_xs">项数</label>：<input type="text" id="scq_dcsl_xs" size="5" value="5">
-                            <label for="scq_dcsl_gc">公差</label>：<input type="text" id="scq_dcsl_gc" size="5" value="1"> 
-                            <input type="checkbox" id="scq_dcsl_bl"><label for="scq_dcsl_bl">补0</label>
-                            <input type="checkbox" id="scq_dcsl_dx"><label for="scq_dcsl_dx">倒序</label>
-                            
-                            <br><br>
-                            <input type="radio" name="scq_radio" id="scq_dbsl"> <label for="scq_dbsl">等比数列</label>
-                            <label for="scq_dbsl_sx">首项</label>：<input type="text" id="scq_dbsl_sx" size="5" value="1">
-                            <label for="scq_dbsl_xs">项数</label>：<input type="text" id="scq_dbsl_xs" size="5" value="5">
-                            <label for="scq_dbsl_gc">公比</label>：<input type="text" id="scq_dbsl_gb" size="5" value="2"> 
-                            <input type="checkbox" id="scq_dbsl_bl"><label for="scq_dbsl_bl">补0</label>
-                            <input type="checkbox" id="scq_dbsl_dx"><label for="scq_dbsl_dx">倒序</label>
-                            
-                            <br><br>
-                            <input type="radio" name="scq_radio" id="scq_zmbh"> <label for="scq_zmbh">字母变化</label>
-                            <label for="scq_zmbh_c">从</label>：<input type="text" id="scq_zmbh_c" size="5" value="a">
-                            <label for="scq_zmbh_d">到</label>：<input type="text" id="scq_zmbh_d" size="5" value="z">
-                            <input type="checkbox" id="scq_zmbh_dx"><label for="scq_zmbh_dx">倒序</label>
-                            
-                            <br><br>
-                            <div align="center"><input type="button" onclick="generateLinks()" value="生成" class="btn btn-success" style="background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;"></div>
-                            <br>
-                            
-                            <label for="scq_jieguo">结果：</label><br>
-                            <textarea id="scq_jieguo" rows="20" class="form-control" onclick="this.focus();this.select()" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
-                            
-                            </td></tr>
-                    </tbody></table>
-                    
-                    <h2 align="center" class="alert alert-warning" style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px;">链接地址批量生成器用法说明：</h2>
-                    <div class="alert alert-info" style="font-size:16px; background-color: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px;">
-                        <p>批量下载功能可以方便的创建多个包含共同特征的下载任务。例如网站A提供了10个这样的下载链接：</p>
-                        <p>http://www.a.com/01.zip</p>
-                        <p>http://www.a.com/02.zip</p>
-                        <p>...（中间省略）</p>
-                        <p>http://www.a.com/10.zip</p>
-                        <p>这10个地址只有数字部分不同，如果用(*)表示不同的部分，这些地址可以写成：</p>
-                        <p>http://www.a.com/(*).zip</p>
-                        <p>同时，通配符长度指的是这些地址不同部分数字的长度，例如：</p>
-                        <p>从01.zip－10.zip，通配符长度是2；</p>
-                        <p>从001.zip－010.zip，通配符长度是3。</p>
-                        <p>注意，在填写从xxx到xxx的时候，虽然是从01到10或者是001到010，但是，当您设定了通配符长度以后，就只需要填写成从1到10。 填写完成后，在示意窗口会显示第一个和最后一个任务的具体链接地址，您可以检查是否正确，然后点确定完成操作。</p>
-                        <p>应用举例：<br>1.百度站长后台批量提交待收录文章可以使用该工具将文章链接批量生成后进行提交。<br>2.网址批量抓取可使用该工具批量生成链接地址。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        
+        <div class="navigation-container">
+            <div class="navigation">
+                <a href="https://link3.cc/gyjune" target="_blank">
+                    <div class="nav-card">
+                        <h3>我的工具箱</h3>
 
-    <!-- 底部链接区域 -->
-    <div class="footer-links">
-        <a data-tooltip="打开我的工具箱" onclick="openToolbox()">我的工具箱</a>
-        <a data-tooltip="点击显示邮箱地址" onclick="showEmail()">我的邮箱</a>
-        <a data-tooltip="访问我的微博" onclick="openWeibo()">我的微博</a>
-        <!-- 添加导航地址 -->
-        <a data-tooltip="访问我的导航地址" onclick="openNav1()">格式转换</a>
-        <a data-tooltip="访问我的另一个导航地址" onclick="openNav2()">加密工具</a>
-        <!-- 添加格式转换工具链接 -->
-        <a data-tooltip="格式转换工具" onclick="openFormatTool()">格式转换工具</a>
-    </div>
-    
-    <div class="copyright">
-        Copyright © 2025 - 多功能网站 | 版权所有
+                    </div>
+                </a>
+                
+                <a href="https://zj.gyj07.fun/txt.html" target="_blank">
+                    <div class="nav-card">
+                        <h3>直播源转换工具</h3>
+                    </div>
+                </a>
+                
+                <a href="https://zj.gyj07.fun/pl.html" target="_blank">
+                    <div class="nav-card">
+                        <h3>链接批量生成器</h3>
+
+                    </div>
+                </a>
+                
+                <a href="https://zj.gyj07.fun/jm.html" target="_blank">
+                    <div class="nav-card">
+                        <h3>点播源加解密工具</h3>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 时钟与工具箱 | 为您提供准确的时间和实用工具</p>
+        </footer>
     </div>
 
     <script>
-        // 页面切换功能
-        function showPage(pageId) {
-            // 隐藏所有页面
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // 显示选中的页面
-            document.getElementById(pageId).classList.add('active');
-        }
-        
-        // 时钟功能
-        function updateClock() {
+        function updateTime() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            // 更新数字时钟
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('digital-time').textContent = `${hours}:${minutes}:${seconds}`;
             
+            // 更新日期
             const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
             const weekday = weekdays[now.getDay()];
+            document.getElementById('digital-date').textContent = `${year}年${month}月${day}日 ${weekday}`;
             
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 星期${weekday}`;
+            // 更新虚拟时钟
+            const secondDegrees = (seconds * 6) - 90;
+            const minuteDegrees = (minutes * 6 + seconds * 0.1) - 90;
+            const hourDegrees = (hours % 12 * 30 + minutes * 0.5) - 90;
             
-            // 每秒更新一次
-            setTimeout(updateClock, 1000);
+            document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+            document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+            document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+            
+            // 更新日历
+            document.getElementById('calendar-date').textContent = day;
+            document.getElementById('calendar-month-year').textContent = `${month}月 ${year}`;
+            document.getElementById('calendar-day').textContent = weekday;
         }
         
-        // 日历功能
-        function renderCalendar() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-            
-            // 获取当月第一天是星期几
-            const firstDay = new Date(year, month, 1).getDay();
-            // 获取当月有多少天
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            const calendarEl = document.getElementById('calendar');
-            let calendarHTML = '<table class="calendar"><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr><tr>';
-            
-            // 填充空白
-            for (let i = 0; i < firstDay; i++) {
-                calendarHTML += '<td></td>';
-            }
-            
-            // 填充日期
-            for (let day = 1; day <= daysInMonth; day++) {
-                const isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
-                
-                if (isToday) {
-                    calendarHTML += `<td><span class="today">${day}</span></td>`;
-                } else {
-                    calendarHTML += `<td>${day}</td>`;
-                }
-                
-                // 换行
-                if ((firstDay + day) % 7 === 0) {
-                    calendarHTML += '</tr><tr>';
-                }
-            }
-            
-            calendarHTML += '</tr></table>';
-            calendarEl.innerHTML = calendarHTML;
-        }
+        // 初始更新时间
+        updateTime();
         
-        // 链接生成功能（简化版）
-        function generateLinks() {
-            const urlPattern = document.getElementById('scq_url').value;
-            let results = "";
-            
-            if (document.getElementById('scq_dcsl').checked) {
-                // 等差数列
-                const start = parseInt(document.getElementById('scq_dcsl_sx').value);
-                const count = parseInt(document.getElementById('scq_dcsl_xs').value);
-                const step = parseInt(document.getElementById('scq_dcsl_gc').value);
-                const padZero = document.getElementById('scq_dcsl_bl').checked;
-                const reverse = document.getElementById('scq_dcsl_dx').checked;
-                
-                let numbers = [];
-                for (let i = 0; i < count; i++) {
-                    numbers.push(start + i * step);
-                }
-                
-                if (reverse) numbers.reverse();
-                
-                numbers.forEach(num => {
-                    const value = padZero ? String(num).padStart(2, '0') : num;
-                    results += urlPattern.replace('(*)', value) + '\n';
-                });
-            }
-            else if (document.getElementById('scq_zmbh').checked) {
-                // 字母变化
-                const fromChar = document.getElementById('scq_zmbh_c').value.charCodeAt(0);
-                const toChar = document.getElementById('scq_zmbh_d').value.charCodeAt(0);
-                const reverse = document.getElementById('scq_zmbh_dx').checked;
-                
-                let chars = [];
-                for (let i = fromChar; i <= toChar; i++) {
-                    chars.push(String.fromCharCode(i));
-                }
-                
-                if (reverse) chars.reverse();
-                
-                chars.forEach(char => {
-                    results += urlPattern.replace('(*)', char) + '\n';
-                });
-            }
-            
-            document.getElementById('scq_jieguo').value = results;
-        }
-        
-        // 显示邮箱功能
-        function showEmail() {
-            alert('我的邮箱地址是：gyjune@126.com');
-        }
-        
-        // 打开工具箱
-        function openToolbox() {
-            window.open('https://link3.cc/gyjune', '_blank');
-        }
-        
-        // 打开微博
-        function openWeibo() {
-            window.open('https://weibo.com/u/1771411553', '_blank');
-        }
-        
-        // 打开格式转换
-        function openNav1() {
-            window.open('https://gyjune.gt.tc', '_blank');
-        }
-        
-        // 打开加密工具
-        function openNav2() {
-            window.open('https://gyjune.infy.uk', '_blank');
-        }
-        
-        // 打开格式转换工具
-        function openFormatTool() {
-            window.open('https://gyjune.kesug.com/1.html', '_blank');
-        }
-        
-        // 初始化
-        window.onload = function() {
-            updateClock();
-            renderCalendar();
-        };
+        // 每秒更新一次
+        setInterval(updateTime, 1000);
     </script>
 </body>
 </html>
