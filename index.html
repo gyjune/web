@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TXT/M3U播放列表转换工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #9b59b6;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-radius: 10px;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 25px;
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-upload {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .convert-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 15px 0 20px 0;
+        }
+        
+        .convert-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        
+        .convert-btn i {
+            font-size: 1.1rem;
+        }
+        
+        .output-section {
+            margin-top: 25px;
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn-accent {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 1000px;
+        }
+        
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: 6px;
+            white-space: nowrap;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            min-width: 0;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .convert-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .file-upload {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .toast {
+                bottom: 15px;
+                width: 90%;
+                text-align: center;
+            }
+            
+            /* 优化底部链接布局 */
+            .footer-links {
+                flex-direction: row;
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .footer-links a {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+                white-space: normal;
+                line-height: 1.3;
+                min-height: 60px;
+                justify-content: center;
+            }
+            
+            .footer-links a i {
+                font-size: 1rem;
+                margin-bottom: 2px;
+            }
+        }
+
+        /* 针对更小屏幕的额外调整 */
+        @media (max-width: 480px) {
+            .footer-links {
+                gap: 6px;
+                padding: 10px;
+            }
+            
+            .footer-links a {
+                padding: 8px 5px;
+                font-size: 0.75rem;
+                min-height: 55px;
+            }
+            
+            .btn {
+                padding: 10px 14px;
+            }
+        }
+        
+        /* 添加点击效果 */
+        .btn:active, .footer-links a:active {
+            transform: translateY(1px) !important;
+        }
+        
+        /* 确保按钮在移动设备上易于点击 */
+        @media (max-width: 768px) {
+            .btn, .footer-links a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>TXT/M3U播放列表转换工具</h1>
+            <p class="subtitle">简单快捷的播放列表格式转换</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-pen"></i>输入内容</h2>
+                    <div class="file-upload">
+                        <label for="fileInput" class="btn btn-outline">
+                            <i class="fas fa-upload"></i>上传文件
+                        </label>
+                        <input type="file" id="fileInput" class="file-input" accept=".txt,.m3u">
+                    </div>
+                </div>
+                <textarea id="inputArea" placeholder="在此粘贴TXT或M3U格式的播放列表内容，或上传文件..."></textarea>
+                
+                <div class="convert-buttons">
+                    <button id="convertToM3U" class="btn btn-primary convert-btn">
+                        <i class="fas fa-arrow-right"></i>转换为M3U格式
+                    </button>
+                    <button id="convertToTXT" class="btn btn-primary convert-btn">
+                        <i class="fas fa-arrow-right"></i>转换为TXT格式
+                    </button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-export"></i>输出内容</h2>
+                </div>
+                <textarea id="outputArea" placeholder="转换后的内容将显示在这里..." readonly=""></textarea>
+                <div class="output-actions">
+                    <button id="copyOutput" class="btn btn-accent">
+                        <i class="fas fa-copy"></i>复制内容
+                    </button>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="clearContent" class="btn btn-danger action-btn">
+                    <i class="fas fa-broom"></i>清除内容
+                </button>
+                <button id="downloadFile" class="btn btn-secondary action-btn">
+                    <i class="fas fa-download"></i>下载文件
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <a href="https://gyjune.kesug.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-home"></i>我的主页</a>
+        <a href="https://gyjune.infy.uk/sc.html" target="_blank" rel="noopener noreferrer"><i class="fas fa-upload"></i>直播源上传工具</a>
+        <a href="https://gyjune.infy.uk/txt.html" target="_blank" rel="noopener noreferrer"><i class="fas fa-exchange-alt"></i>直播源转换工具</a>
+        <a href="https://gyjune.infy.uk/" target="_blank" rel="noopener noreferrer"><i class="fas fa-lock"></i>点播源加密工具</a>
+    </div>
+
+    <div id="toast" class="toast">内容已复制到剪贴板</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputArea = document.getElementById('inputArea');
+            const outputArea = document.getElementById('outputArea');
+            const fileInput = document.getElementById('fileInput');
+            const convertToM3U = document.getElementById('convertToM3U');
+            const convertToTXT = document.getElementById('convertToTXT');
+            const clearContent = document.getElementById('clearContent');
+            const downloadFile = document.getElementById('downloadFile');
+            const copyOutput = document.getElementById('copyOutput');
+            const toast = document.getElementById('toast');
+            
+            // 显示提示信息
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+            
+            // 文件上传处理
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    inputArea.value = e.target.result;
+                };
+                reader.readAsText(file);
+            });
+            
+            // TXT转M3U
+            convertToM3U.addEventListener('click', function() {
+                const txtContent = inputArea.value.trim();
+                if (!txtContent) {
+                    showToast('请输入要转换的内容');
+                    return;
+                }
+                
+                let m3uContent = '#EXTM3U x-tvg-url="https://live.fanmingming.cn/e.xml"\n';
+                let currentGroup = '';
+                
+                const lines = txtContent.split('\n');
+                let channelId = 1;
+                
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+                    
+                    // 检查是否是分组行
+                    if (trimmedLine.endsWith(',#genre#')) {
+                        currentGroup = trimmedLine.replace(',#genre#', '');
+                        continue;
+                    }
+                    
+                    // 处理频道行
+                    const parts = trimmedLine.split(',');
+                    if (parts.length >= 2) {
+                        const channelName = parts[0];
+                        const channelUrl = parts[1];
+                        
+                        m3uContent += `#EXTINF:-1 tvg-id="${channelId}" tvg-name="${channelName}" tvg-logo="https://live.fanmingming.cn/tv/${channelName}.png" group-title="${currentGroup}",${channelName}\n`;
+                        m3uContent += `${channelUrl}\n`;
+                        
+                        channelId++;
+                    }
+                }
+                
+                outputArea.value = m3uContent;
+                showToast('已转换为M3U格式');
+            });
+            
+            // M3U转TXT
+            convertToTXT.addEventListener('click', function() {
+                const m3uContent = inputArea.value.trim();
+                if (!m3uContent) {
+                    showToast('请输入要转换的内容');
+                    return;
+                }
+                
+                let txtContent = '';
+                let currentGroup = '';
+                
+                const lines = m3uContent.split('\n');
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    // 检查是否是EXTINF行
+                    if (line.startsWith('#EXTINF:')) {
+                        // 提取组信息
+                        const groupMatch = line.match(/group-title="([^"]*)"/);
+                        if (groupMatch && groupMatch[1]) {
+                            const newGroup = groupMatch[1];
+                            if (newGroup !== currentGroup) {
+                                currentGroup = newGroup;
+                                txtContent += `${currentGroup},#genre#\n`;
+                            }
+                        }
+                        
+                        // 提取频道名称
+                        const nameMatch = line.match(/,(.*)$/);
+                        if (nameMatch && nameMatch[1]) {
+                            const channelName = nameMatch[1];
+                            // 下一个行应该是URL
+                            if (i + 1 < lines.length) {
+                                const urlLine = lines[i + 1].trim();
+                                if (urlLine && !urlLine.startsWith('#')) {
+                                    txtContent += `${channelName},${urlLine}\n`;
+                                    i++; // 跳过URL行
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                outputArea.value = txtContent;
+                showToast('已转换为TXT格式');
+            });
+            
+            // 清除内容
+            clearContent.addEventListener('click', function() {
+                inputArea.value = '';
+                outputArea.value = '';
+                fileInput.value = '';
+                showToast('内容已清除');
+            });
+            
+            // 复制到剪贴板
+            copyOutput.addEventListener('click', function() {
+                if (!outputArea.value) {
+                    showToast('没有内容可复制');
+                    return;
+                }
+                
+                outputArea.select();
+                document.execCommand('copy');
+                showToast('内容已复制到剪贴板');
+            });
+            
+            // 下载文件
+            downloadFile.addEventListener('click', function() {
+                const content = outputArea.value;
+                if (!content) {
+                    showToast('没有内容可下载');
+                    return;
+                }
+                
+                const isM3U = content.includes('#EXTM3U');
+                const format = isM3U ? 'm3u' : 'txt';
+                const filename = `playlist.${format}`;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                // 清理
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                showToast(`文件已下载: ${filename}`);
+            });
+        });
+    </script>
+</body>
+</html>

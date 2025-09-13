@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多功能工具箱 - 直播源转换与时光记忆</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #34495e;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab-btn.active {
+            background: #2c3e50;
+            box-shadow: inset 0 -4px 0 #3498db;
+        }
+        
+        .tab-btn:hover {
+            background: #2c3e50;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-area {
+            margin-bottom: 25px;
+        }
+        
+        .file-upload {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover {
+            border-color: #3498db;
+            background: #e8f4fd;
+        }
+        
+        .file-upload-label i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+        
+        input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 200px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .options {
+            margin: 20px 0;
+        }
+        
+        .epg-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .convert-btn {
+            width: 100%;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .convert-btn:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .format-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .format-example h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .format-example pre {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        .result-area {
+            margin-top: 30px;
+        }
+        
+        .result-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .result-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .copy-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        .download-btn {
+            background: #9b59b6;
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: #8e44ad;
+        }
+        
+        /* 咪咕工具链接样式 */
+        .migu-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .migu-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .migu-sd {
+            background: #2e7d32; /* 深绿色 */
+        }
+        
+        .migu-sd:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+        
+        .migu-hd {
+            background: #c62828; /* 大红色 */
+        }
+        
+        .migu-hd:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        
+        .proxy-btn {
+            background: #3498db; /* 蓝色 */
+        }
+        
+        .proxy-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+        }
+        
+        /* 粉红时光记忆样式 */
+        .clock-calendar-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .clock {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #d64d86;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #8a5a8b;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .calendar-header {
+            grid-column: span 7;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #d64d86;
+            font-weight: 600;
+        }
+        
+        .weekday {
+            font-weight: 600;
+            color: #8a5a8b;
+        }
+        
+        .day {
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .today {
+            background: #ff66a3;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .article {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .pink-title {
+            color: #d64d86;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+        
+        .pink-text {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 1.05rem;
+        }
+        
+        .signature {
+            text-align: right;
+            font-style: italic;
+            margin-top: 20px;
+            color: #8a5a8b;
+        }
+        
+        @media (max-width: 768px) {
+            .result-buttons {
+                flex-direction: column;
+            }
+            
+            .migu-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .migu-btn {
+                width: 80%;
+                justify-content: center;
+            }
+            
+            header h1 {
+                font-size: 24px;
+            }
+            
+            .clock {
+                font-size: 2.5rem;
+            }
+            
+            .date {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-toolbox"></i> 多功能工具箱</h1>
+            <p>直播源格式转换与时光记忆</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="converter">
+                <i class="fas fa-sync-alt"></i> 直播源转换
+            </button>
+            <button class="tab-btn" data-tab="memory">
+                <i class="fas fa-clock"></i> 时光记忆
+            </button>
+        </div>
+        
+        <div class="tab-content active" id="converter">
+            <div class="input-area">
+                <h2 class="section-title"><i class="fas fa-pencil-alt"></i> M3U 与 TXT 格式转换</h2>
+                
+                <div class="file-upload">
+                    <label for="file-upload" class="file-upload-label">
+                        <i class="fas fa-upload"></i> 上传文件（M3U 或 TXT）
+                    </label>
+                    <input type="file" id="file-upload" accept=".m3u,.txt">
+                </div>
+                
+                <textarea id="input-content" placeholder="或者直接粘贴 M3U 或 TXT 文件内容..."></textarea>
+                
+                <div class="options">
+                    <input type="text" id="epg-url" class="epg-input" placeholder="EPG URL (可选, 默认为 https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz)">
+                    
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="keep-groups">
+                        <label for="keep-groups">保留分组信息</label>
+                    </div>
+                </div>
+                
+                <button id="convert" class="convert-btn">
+                    <i class="fas fa-exchange-alt"></i> 转换
+                </button>
+                
+                <div class="format-example">
+                    <h4><i class="fas fa-info-circle"></i> TXT 格式示例：</h4>
+                    <pre>CCTV-1,http://example.com/stream.m3u8
+央视,#genre#</pre>
+                </div>
+            </div>
+            
+            <div class="result-area">
+                <h2 class="section-title"><i class="fas fa-result"></i> 转换结果</h2>
+                <textarea id="output" readonly></textarea>
+                
+                <div class="result-buttons">
+                    <button id="copyBtn" class="result-btn copy-btn">
+                        <i class="fas fa-copy"></i> 复制全部结果
+                    </button>
+                    <button id="download-btn" class="result-btn download-btn" style="display: none;">
+                        <i class="fas fa-download"></i> 下载转换后的文件
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="memory">
+            <div class="clock-calendar-box">
+                <div class="clock" id="clock">00:00:00</div>
+                <div class="date" id="date">2023年11月15日 星期三</div>
+                <div class="calendar">
+                    <div class="calendar-header" id="calendar-header">十一月 2023</div>
+                    <!-- 星期行 -->
+                    <div class="weekday">日</div>
+                    <div class="weekday">一</div>
+                    <div class="weekday">二</div>
+                    <div class="weekday">三</div>
+                    <div class="weekday">四</div>
+                    <div class="weekday">五</div>
+                    <div class="weekday">六</div>
+                    <!-- 日期由JavaScript生成 -->
+                </div>
+            </div>
+            
+            <div class="article">
+                <h1 class="pink-title">时光絮语</h1>
+                <p class="pink-text">晨光微熹，时光在粉色的梦境中缓缓流淌。每一秒都是宇宙馈赠的独特礼物，每一刻都是生命编织的不可重复图案。</p>
+                <p class="pink-text">坐在窗边，看光影在墙面游走，听时钟滴答细语。时光如水，从指缝间悄然滑过，不留痕迹却改变万物。昨日之花已凋零，今日之蕾正待放。</p>
+                <p classpink-text">我们总在追逐时间的脚步，却忘了驻足欣赏沿途风景。或许，生命最美的不是终点，而是沿途收集的晨露、晚霞与星光。</p>
+                <p class="pink-text">在这粉色的时光里，愿你我都能温柔以待每一个当下，珍藏每一份感动，在流转的时光中，找到属于自己的永恒。</p>
+                <div class="signature">—— 记录于一个宁静的午后</div>
+            </div>
+        </div>
+        
+        <!-- 修改后的工具链接部分，将静态m3u8按钮与其他两个按钮并列 -->
+        <div class="migu-links">
+            <a href="http://gyjune.kesug.com/migu.html" target="_blank" class="migu-btn migu-sd">
+                <i class="fas fa-tv"></i> 咪咕源普清批量工具
+            </a>
+            <a href="http://gyjune.kesug.com/mggq.html" target="_blank" class="migu-btn migu-hd">
+                <i class="fas fa-hd-tv"></i> 咪咕源高清批量工具
+            </a>
+            <a href="http://nn.7x9d.cn/xzc2.php" target="_blank" class="migu-btn proxy-btn">
+                <i class="fas fa-link"></i> 静态m3u8直播通用代理
+            </a>
+        </div>
+        
+        <footer>
+            <p>© 2025 多功能工具箱 | 本工具仅用于技术学习交流</p>
+        </footer>
+    </div>
+
+    <script>
+        // 选项卡切换功能
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有活动状态
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 添加当前活动状态
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // 直播源转换功能
+        // 判断是否是 M3U 格式
+        function isM3U(content) {
+            return content.includes('#EXTM3U');
+        }
+
+        // 验证 URL 是否有效
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        // 解析 M3U 转为 TXT
+        function parseM3UToTXT(m3uContent, keepGroups) {
+            const lines = m3uContent.split('\n');
+            const channels = {};
+            let currentGroup = '未分组';
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#EXTINF')) {
+                    const groupMatch = line.match(/group-title="([^"]*)"/) || [, '未分组'];
+                    const nameMatch = line.match(/tvg-name="([^"]*)"/) || [, line.split(',').pop() || '未知频道'];
+                    const group = groupMatch[1];
+                    const name = nameMatch[1];
+                    const url = lines[i + 1] ? lines[i + 1].trim() : '';
+
+                    if (!channels[group]) {
+                        channels[group] = [];
+                    }
+                    channels[group].push(`${name},${url}`);
+                    currentGroup = group;
+                }
+            }
+
+            let txtContent = '';
+            if (keepGroups) {
+                for (const [group, channelList] of Object.entries(channels)) {
+                    txtContent += `${group},#genre#\n`;
+                    txtContent += channelList.join('\n') + '\n';
+                }
+            } else {
+                for (const [group, channelList] of Object.entries(channels)) {
+                    txtContent += channelList.join('\n') + '\n';
+                }
+            }
+
+            return txtContent.trim();
+        }
+
+        // 转换 TXT 转为 M3U
+        function convertTXTToM3U(txtContent, epgUrl, keepGroups) {
+            const defaultEpgUrl = "https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz";
+            const lines = txtContent.split('\n');
+            let m3uContent = `#EXTM3U x-tvg-url="${epgUrl || defaultEpgUrl}"\n`;
+            let currentGenre = '未分类';
+
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (trimmedLine.endsWith(',#genre#')) {
+                    currentGenre = trimmedLine.replace(',#genre#', '');
+                } else if (trimmedLine && !trimmedLine.startsWith('#')) {
+                    const [channelName, channelUrl] = trimmedLine.split(',');
+                    if (!channelName || !channelUrl) continue; // 跳过无效行
+                    const tvgLogo = `https://epg.112114.xyz/logo/${channelName}.png`;
+                    if (keepGroups) {
+                        m3uContent += `#EXTINF:-1 group-title="${currentGenre}" tvg-name="${channelName}" tvg-logo="${tvgLogo}" epg-url="${epgUrl || defaultEpgUrl}",${channelName}\n`;
+                    } else {
+                        m3uContent += `#EXTINF:-1 tvg-name="${channelName}" tvg-logo="${tvgLogo}" epg-url="${epgUrl || defaultEpgUrl}",${channelName}\n`;
+                    }
+                    m3uContent += `${channelUrl}\n`;
+                }
+            }
+
+            return m3uContent.trim();
+        }
+
+        // 显示转换结果
+        function displayResult(content) {
+            const resultTextarea = document.getElementById('output');
+            resultTextarea.value = content;
+            document.getElementById('download-btn').style.display = 'block';
+        }
+
+        // 下载转换后的文件
+        function downloadFile(content, isM3UInput) {
+            const timestamp = new Date().toISOString().replace(/[:.-]/g, '').slice(0, 15);
+            const fileName = `converted_${timestamp}.${isM3UInput ? 'txt' : 'm3u'}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 文件上传处理
+        document.getElementById('file-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('input-content').value = e.target.result;
+                };
+                reader.onerror = function() {
+                    alert('文件读取失败，请检查文件格式！');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // 复制按钮事件
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const outputTextArea = document.getElementById('output');
+            const content = outputTextArea.value.trim();
+
+            if (!content) {
+                alert('没有可复制的内容！');
+                return;
+            }
+
+            try {
+                outputTextArea.focus();
+                outputTextArea.select();
+                outputTextArea.setSelectionRange(0, content.length);
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('内容已复制到剪贴板！');
+                } else {
+                    alert('复制失败，请手动选中内容并按 Ctrl+C 复制（或长按复制）。');
+                }
+            } catch (err) {
+                alert('复制失败，请手动选中内容并按 Ctrl+C 复制（或长按复制）。');
+                console.error('复制失败: ', err);
+            }
+        });
+
+        // 下载按钮事件
+        document.getElementById('download-btn').addEventListener('click', () => {
+            const content = document.getElementById('output').value;
+            const inputContent = document.getElementById('input-content').value.trim();
+            if (content) {
+                downloadFile(content, isM3U(inputContent));
+            } else {
+                alert('没有可下载的内容！');
+            }
+        });
+
+        // 转换按钮事件
+        document.getElementById('convert').addEventListener('click', function() {
+            const inputContent = document.getElementById('input-content').value.trim();
+            const epgUrl = document.getElementById('epg-url').value.trim();
+            const keepGroups = document.getElementById('keep-groups').checked;
+
+            if (!inputContent) {
+                alert('请先上传文件或粘贴 M3U/TXT 内容！');
+                return;
+            }
+
+            if (epgUrl && !isValidUrl(epgUrl)) {
+                alert('请输入有效的 EPG URL！');
+                return;
+            }
+
+            const defaultEpgUrl = "https://gitee.com/gsls200808/xmltvepg/raw/master/e9.xml.gz";
+            let resultContent = '';
+
+            try {
+                if (isM3U(inputContent)) {
+                    resultContent = parseM3UToTXT(inputContent, keepGroups);
+                } else {
+                    resultContent = convertTXTToM3U(inputContent, epgUrl || defaultEpgUrl, keepGroups);
+                }
+                displayResult(resultContent);
+            } catch (err) {
+                alert('转换失败，请检查输入格式！');
+                console.error('转换错误: ', err);
+            }
+        });
+        
+        // 粉红时光记忆功能
+        function updateClock() {
+            const now = new Date();
+            
+            // 更新时钟
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // 更新日期
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekday = weekdays[now.getDay()];
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 星期${weekday}`;
+            
+            // 更新日历
+            updateCalendar(now);
+        }
+        
+        function updateCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const today = date.getDate();
+            
+            // 设置日历标题
+            const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+            document.getElementById('calendar-header').textContent = `${monthNames[month]} ${year}`;
+            
+            // 获取本月第一天和最后一天
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // 计算本月第一天是星期几（0是星期日）
+            const firstDayIndex = firstDay.getDay();
+            
+            // 计算本月总天数
+            const daysInMonth = lastDay.getDate();
+            
+            // 生成日历天数
+            const calendarContainer = document.querySelector('.calendar');
+            
+            // 清除旧的日期（保留前7个星期几标题）
+            while (calendarContainer.children.length > 7) {
+                calendarContainer.removeChild(calendarContainer.lastChild);
+            }
+            
+            // 添加空白占位（本月第一天之前的日期）
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.classList.add('day');
+                calendarContainer.appendChild(emptyDay);
+            }
+            
+            // 添加本月日期
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('day');
+                if (i === today) {
+                    dayElement.classList.add('today');
+                }
+                dayElement.textContent = i;
+                calendarContainer.appendChild(dayElement);
+            }
+        }
+        
+        // 初始加载
+        updateClock();
+        
+        // 每秒更新一次
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
